@@ -66,6 +66,10 @@ body {
     font-size: 20px;
 }
 
+
+.calculator__button--number {
+    background: #575757;
+}
 .calculator__button:active {
     background: #478AFF
 }
