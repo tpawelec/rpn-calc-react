@@ -11,7 +11,6 @@ class Application extends Component {
         this.state = {
             equation: "0",
             nextIsRestet: false,
-            stack: [],
             convertedEquation: ""
 
         }
@@ -43,7 +42,11 @@ class Application extends Component {
         if(this.state.equation.length <= 1) {
             this.setState({equation: "0"})
         } else {
-            this.setState({equation: this.state.equation.slice(0,-1)});
+            if(this.state.equation[this.state.equation.length - 1] === " ") {
+                this.setState({equation: this.state.equation.slice(0,-3)})
+            } else {
+                this.setState({equation: this.state.equation.slice(0,-1)});
+            }
         }
     }
     infixToRpn = (equation) => {
@@ -73,10 +76,10 @@ class Application extends Component {
             }
         }
 
-        for(const token of equation.replace(/\s+/g, '')) {
+        for(const token of equation) {
 
             
-            if(!isNaN(token) || token === '.') {
+            if(!isNaN(token) || token === '.' || token === ' ') {
                 outputStack.push(token);
             } else if (operatorsArray.indexOf(token) !== -1 && operatorStack.length === 0) {
                 operatorStack.push(token);
@@ -102,32 +105,60 @@ class Application extends Component {
                     ) 
 
                 ) {
-                    outputStack.push(operatorStack.pop());
+                    outputStack.push(' ' + operatorStack.pop() + ' ');
                 }
             
                 operatorStack.push(o1);
             } else if(token === '(') {
                 operatorStack.push(token)
-                console.log(operatorStack)
             } else if (token === ')') {
                 while(operatorStack[operatorStack.length -1] !== '(') {
-                    outputStack.push(operatorStack.pop());
+                    outputStack.push(' ' + operatorStack.pop() + ' ');
                 }
                 operatorStack.pop();
             }
         
         }
-        /* for(const operator of operatorStack) {
-            outputStack.push(operator);
-        } */while(operatorStack.length > 0) {
-            outputStack.push(operatorStack.pop());
+        while(operatorStack.length > 0) {
+            outputStack.push(' ' + operatorStack.pop() + ' ');
         }
 
         return outputStack.join('');
     }
+
+    solveEquation = (equation) => {
+        let stack = [];
+        for(const item of equation) {
+            let space = equation.indexOf(' ');
+            if(!isNaN(equation.substr(0, space))) {
+                stack.push(equation.substr(0,space));
+                equation.slice(space);
+                console.log(equation.slice(space))
+            } else {
+                let operator = equation.substr(0, space);
+                let first = stack.pop();
+                let second = stack.pop();
+                if(operator === '+') {
+                    stack.push(first + second);
+                } else if(operator === '-') {
+                    stack.push(first - second);
+                } else if(operator === "*") {
+                    stack.push(first*second);
+                } else if(operator === "/") {
+                    stack.push(first / second);
+                } else if(operator === "^") {
+                    stack.push(Math.pow(first,second));
+                }
+                equation.slice(space);
+            }
+        }
+
+        return stack.join('');
+    }
+
     equals = () => {
         this.setState({convertedEquation: this.infixToRpn(this.state.equation)})
-        this.setState({equation: "0", nextIsRestet: false})
+        this.setState({equation: this.solveEquation(this.infixToRpn(this.state.equation)), nextIsRestet: false})
     }
     render () {
 
