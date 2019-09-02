@@ -9,43 +9,67 @@ class Application extends Component {
         super(props);
 
         this.state = {
-            equation: "0",
+            equation: ['0'],
             nextIsRestet: false,
-            convertedEquation: ""
+            convertedEquation: []
 
         }
         
     }
     addToCurrent = (symbol) => {
-        if(this.state.equation === "0") {
-            this.setState({equation: symbol})
+        if(this.state.equation.length === 1 && this.state.equation[this.state.equation.length - 1] === '0') {
+            let {equation} = this.state;
+            equation[0] = symbol;
+            this.setState({equation: equation});
         } else {
-            if(['+', '-', '*', '/', '^'].indexOf(symbol) === -1) {
-                this.setState({equation: this.state.equation + symbol});
+            if(!isNaN(this.state.equation[this.state.equation.length - 1]) && ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) === -1) {
+                let {equation} = this.state;
+                equation[equation.length - 1] = equation[equation.length - 1] + symbol;
+                this.setState({equation: equation});
             } else {
-                this.setState({equation: this.state.equation + ' ' + symbol + ' '});
+                let {equation} = this.state;
+                equation = [...equation, symbol];
+                this.setState({equation: equation});
             }
-        }
+    }
+
     }
 
     reset = () => {
+        let {equation, nextIsRestet, convertedEquation} = this.state;
+        equation = ['0'];
+        nextIsRestet =  false;
+        convertedEquation = [];
         this.setState(
             {
-                equation: "0",
-                nextIsRestet: false,
-                convertedEquation: ""
+                equation,
+                nextIsRestet,
+                convertedEquation
             }
             );
     }
 
     backspace = () => {
+        let {equation} = this.state;
         if(this.state.equation.length <= 1) {
-            this.setState({equation: "0"})
-        } else {
-            if(this.state.equation[this.state.equation.length - 1] === " ") {
-                this.setState({equation: this.state.equation.slice(0,-3)})
+            if(equation[equation.length - 1].length === 1) {
+                console.log("1")
+                equation = ['0'];
+                this.setState({equation});
             } else {
-                this.setState({equation: this.state.equation.slice(0,-1)});
+                console.log("2")
+                equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
+                this.setState({equation});
+            }
+            
+        } else {
+            if(equation[equation.length - 1].length === 1) {
+                equation.pop();
+                this.setState({equation});
+            } else {
+                console.log("2")
+                equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
+                this.setState({equation});
             }
         }
     }
@@ -76,10 +100,11 @@ class Application extends Component {
             }
         }
 
+        // eslint-disable-next-line
         for(const token of equation) {
 
             
-            if(!isNaN(token) || token === '.' || token === ' ') {
+            if((!isNaN(token) || token === '.') && token !== ' ') {
                 outputStack.push(token);
             } else if (operatorsArray.indexOf(token) !== -1 && operatorStack.length === 0) {
                 operatorStack.push(token);
@@ -105,60 +130,64 @@ class Application extends Component {
                     ) 
 
                 ) {
-                    outputStack.push(' ' + operatorStack.pop() + ' ');
+                    outputStack.push(operatorStack.pop());
+                    o2 = operatorStack[operatorStack.length - 1];
                 }
             
                 operatorStack.push(o1);
             } else if(token === '(') {
                 operatorStack.push(token)
             } else if (token === ')') {
-                while(operatorStack[operatorStack.length -1] !== '(') {
-                    outputStack.push(' ' + operatorStack.pop() + ' ');
-                }
+                 while(operatorStack[operatorStack.length - 1] !== '(') {
+                    outputStack.push(operatorStack.pop());
+                    console.log(operatorStack)
+                } 
                 operatorStack.pop();
+                console.log(operatorStack)
             }
         
         }
         while(operatorStack.length > 0) {
-            outputStack.push(' ' + operatorStack.pop() + ' ');
+            outputStack.push(operatorStack.pop());
         }
-
-        return outputStack.join('');
+        return outputStack;
     }
 
     solveEquation = (equation) => {
         let stack = [];
-        for(const item of equation) {
-            let space = equation.indexOf(' ');
-            if(!isNaN(equation.substr(0, space))) {
-                stack.push(equation.substr(0,space));
-                equation.slice(space);
-                console.log(equation.slice(space))
+        equation.forEach((item) => {
+            
+            item = item.replace(/\s+/g, '');
+            if(item !== ' ') {
+            if(!isNaN(item)) {
+                stack.push(item);
             } else {
-                let operator = equation.substr(0, space);
-                let first = stack.pop();
-                let second = stack.pop();
-                if(operator === '+') {
+                let second = parseFloat(stack.pop());
+                let first = parseFloat(stack.pop());
+                if(item === '+') {
                     stack.push(first + second);
-                } else if(operator === '-') {
+                } else if(item === '-') {
                     stack.push(first - second);
-                } else if(operator === "*") {
+                } else if(item === "*") {
                     stack.push(first*second);
-                } else if(operator === "/") {
+                } else if(item === "/") {
                     stack.push(first / second);
-                } else if(operator === "^") {
+                } else if(item === "^") {
                     stack.push(Math.pow(first,second));
                 }
-                equation.slice(space);
             }
         }
+        })
 
-        return stack.join('');
+        return stack;
     }
 
     equals = () => {
-        this.setState({convertedEquation: this.infixToRpn(this.state.equation)})
-        this.setState({equation: this.solveEquation(this.infixToRpn(this.state.equation)), nextIsRestet: false})
+        let {equation, convertedEquation} = this.state;
+        convertedEquation = this.infixToRpn(equation);
+        equation = this.solveEquation(convertedEquation);
+        this.setState({convertedEquation})
+        this.setState({equation, nextIsRestet: false})
     }
     render () {
 
@@ -186,10 +215,21 @@ class Application extends Component {
             {symbol: "=", cols: 2, action: this.equals},
 
         ];
+        let equationString = '';
+        let convertedEquationString = '';
+
+        this.state.equation.forEach((item) => {
+            equationString += item + ' ';
+        })
+
+        this.state.convertedEquation.forEach((item) => {
+            convertedEquationString += item + ' ';
+        })
+        console.log(this.state.equation)
         return (
             <div className="calculator">
-                <InputField name="converted-quation" id="convertedEquation" value={this.state.convertedEquation} col="4"/>
-                <InputField name="original-equation" id="originalEquation" value={this.state.equation} col="4"/>
+                <InputField name="converted-quation" id="convertedEquation" value={convertedEquationString} col="4"/>
+                <InputField name="original-equation" id="originalEquation" value={equationString} col="4"/>
                 {buttons.map((btn, i) => {
                     return <Button key={i} symbol={btn.symbol} cols={btn.cols} action={(symbol) => btn.action(symbol) } number={!isNaN(btn.symbol)}/>
                 })}
