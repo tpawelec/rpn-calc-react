@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/rpn-react-calc/static/css/main.d2618cd5.chunk.css",
-    "main.js": "/rpn-react-calc/static/js/main.5a9c8716.chunk.js",
-    "main.js.map": "/rpn-react-calc/static/js/main.5a9c8716.chunk.js.map",
-    "runtime~main.js": "/rpn-react-calc/static/js/runtime~main.f45292f8.js",
-    "runtime~main.js.map": "/rpn-react-calc/static/js/runtime~main.f45292f8.js.map",
-    "static/js/2.78a0fb20.chunk.js": "/rpn-react-calc/static/js/2.78a0fb20.chunk.js",
-    "static/js/2.78a0fb20.chunk.js.map": "/rpn-react-calc/static/js/2.78a0fb20.chunk.js.map",
-    "index.html": "/rpn-react-calc/index.html",
-    "precache-manifest.3c3223ad1a30577bf2a375ad526b6ded.js": "/rpn-react-calc/precache-manifest.3c3223ad1a30577bf2a375ad526b6ded.js",
-    "service-worker.js": "/rpn-react-calc/service-worker.js",
-    "static/css/main.d2618cd5.chunk.css.map": "/rpn-react-calc/static/css/main.d2618cd5.chunk.css.map"
+    "main.css": "/rpn-calc-react/static/css/main.d2618cd5.chunk.css",
+    "main.js": "/rpn-calc-react/static/js/main.69188859.chunk.js",
+    "main.js.map": "/rpn-calc-react/static/js/main.69188859.chunk.js.map",
+    "runtime~main.js": "/rpn-calc-react/static/js/runtime~main.0adc1204.js",
+    "runtime~main.js.map": "/rpn-calc-react/static/js/runtime~main.0adc1204.js.map",
+    "static/js/2.ade476dd.chunk.js": "/rpn-calc-react/static/js/2.ade476dd.chunk.js",
+    "static/js/2.ade476dd.chunk.js.map": "/rpn-calc-react/static/js/2.ade476dd.chunk.js.map",
+    "index.html": "/rpn-calc-react/index.html",
+    "precache-manifest.8ea6c534962e44a665ab01ec3f592d32.js": "/rpn-calc-react/precache-manifest.8ea6c534962e44a665ab01ec3f592d32.js",
+    "service-worker.js": "/rpn-calc-react/service-worker.js",
+    "static/css/main.d2618cd5.chunk.css.map": "/rpn-calc-react/static/css/main.d2618cd5.chunk.css.map"
   }
 }
