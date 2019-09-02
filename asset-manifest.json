@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/react-rpn-calc/static/css/main.d2618cd5.chunk.css",
+    "main.js": "/react-rpn-calc/static/js/main.199b3081.chunk.js",
+    "main.js.map": "/react-rpn-calc/static/js/main.199b3081.chunk.js.map",
+    "runtime~main.js": "/react-rpn-calc/static/js/runtime~main.c323e0e6.js",
+    "runtime~main.js.map": "/react-rpn-calc/static/js/runtime~main.c323e0e6.js.map",
+    "static/js/2.78a0fb20.chunk.js": "/react-rpn-calc/static/js/2.78a0fb20.chunk.js",
+    "static/js/2.78a0fb20.chunk.js.map": "/react-rpn-calc/static/js/2.78a0fb20.chunk.js.map",
+    "index.html": "/react-rpn-calc/index.html",
+    "precache-manifest.44231232c64eef666cac0dfe9abc5ece.js": "/react-rpn-calc/precache-manifest.44231232c64eef666cac0dfe9abc5ece.js",
+    "service-worker.js": "/react-rpn-calc/service-worker.js",
+    "static/css/main.d2618cd5.chunk.css.map": "/react-rpn-calc/static/css/main.d2618cd5.chunk.css.map"
+  }
+}
