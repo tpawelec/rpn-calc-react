@@ -17,22 +17,29 @@ class Application extends Component {
         
     }
     addToCurrent = (symbol) => {
-        if(this.state.equation.length === 1 && this.state.equation[this.state.equation.length - 1] === '0') {
-            let {equation} = this.state;
-            equation[0] = symbol;
-            this.setState({equation: equation});
+        if(this.state.nextIsRestet) {
+            this.setState({
+                equation: ['0'],
+                nextIsRestet: false,
+                convertedEquation: []
+            })
         } else {
-            if(!isNaN(this.state.equation[this.state.equation.length - 1]) && ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) === -1) {
+            if(this.state.equation.length === 1 && this.state.equation[this.state.equation.length - 1] === '0') {
                 let {equation} = this.state;
-                equation[equation.length - 1] = equation[equation.length - 1] + symbol;
+                equation[0] = symbol;
                 this.setState({equation: equation});
             } else {
-                let {equation} = this.state;
-                equation = [...equation, symbol];
-                this.setState({equation: equation});
+                if(!isNaN(this.state.equation[this.state.equation.length - 1]) && ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) === -1) {
+                    let {equation} = this.state;
+                    equation[equation.length - 1] = equation[equation.length - 1] + symbol;
+                    this.setState({equation: equation});
+                } else {
+                    let {equation} = this.state;
+                    equation = [...equation, symbol];
+                    this.setState({equation: equation});
+                }
             }
-    }
-
+        }
     }
 
     reset = () => {
@@ -182,12 +189,47 @@ class Application extends Component {
         return stack;
     }
 
+    isEquationRight = (equation) => {
+        let isOk = true;
+        let operators = ['+', '-', '/', '*', '^', '.'];
+        if(equation.length < 3) {
+            isOk = false;
+        }
+        equation.forEach((item, index) => {
+            if(item === '(') {
+                if(equation[index + 1] === ')') {
+                    isOk = false;
+                }
+            } else if (item === ')') {
+                if(equation[index + 1] === '(') {
+                    isOk = false;
+                }
+            } else if(operators.indexOf(item) !== -1) {
+                if(operators.indexOf(equation[index + 1]) !== -1) {
+                    isOk = false;
+                }
+            }
+
+        })
+
+        return isOk;
+    }
+
     equals = () => {
         let {equation, convertedEquation} = this.state;
-        convertedEquation = this.infixToRpn(equation);
-        equation = this.solveEquation(convertedEquation);
-        this.setState({convertedEquation})
-        this.setState({equation, nextIsRestet: false})
+        /*
+        two parans (\)\()+
+        two or more operators [\.\-\*\+\/]*[\.\-\*\+\/]
+        */
+        
+        if(this.isEquationRight(equation)) {
+            convertedEquation = this.infixToRpn(equation);
+            equation = this.solveEquation(convertedEquation);
+            this.setState({convertedEquation})
+            this.setState({equation, nextIsRestet: true})
+        } else {
+            this.setState({convertedEquation: ['Your equation is wrong']})
+        }
     }
     render () {
 
@@ -224,8 +266,8 @@ class Application extends Component {
 
         this.state.convertedEquation.forEach((item) => {
             convertedEquationString += item + ' ';
-        })
-        console.log(this.state.equation)
+        });
+        
         return (
             <div className="calculator">
                 <InputField name="converted-quation" id="convertedEquation" value={convertedEquationString} col="4"/>

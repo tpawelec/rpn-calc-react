@@ -1,5 +1,5 @@
 {
-  "name": "rpn-react-calc",
+  "name": "rpn-calc-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -31,5 +31,5 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://tpawelec.github.io/react-rpn-calc"
+  "homepage": "https://tpawelec.github.io/rpn-calc-react"
 }
