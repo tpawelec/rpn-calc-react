@@ -12,14 +12,31 @@ class Application extends Component {
             equation: ['0'],
             nextIsRestet: false,
             convertedEquation: []
-
         }
         
+        this.keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '/', '+', '-', '*', '^', '(', ')'];
     }
+
+    componentDidMount() {
+        document.addEventListener('keydown', (e) => {
+            if(this.keys.indexOf(e.key) !== -1) {
+                this.addToCurrent(e.key);
+            } else if(e.key === 'Enter') {
+                console.log(e.key)
+                this.equals();
+            } else if(e.key === 'Backspace') {
+                e.preventDefault();
+                this.backspace();
+            } else if(e.key === ' ') {
+                this.reset();
+            }
+        })
+    }
+
     addToCurrent = (symbol) => {
         if(this.state.nextIsRestet) {
             this.setState({
-                equation: ['0'],
+                equation: [symbol],
                 nextIsRestet: false,
                 convertedEquation: []
             })
@@ -60,11 +77,9 @@ class Application extends Component {
         let {equation} = this.state;
         if(this.state.equation.length <= 1) {
             if(equation[equation.length - 1].length === 1) {
-                console.log("1")
                 equation = ['0'];
                 this.setState({equation});
             } else {
-                console.log("2")
                 equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
                 this.setState({equation});
             }
@@ -74,7 +89,6 @@ class Application extends Component {
                 equation.pop();
                 this.setState({equation});
             } else {
-                console.log("2")
                 equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
                 this.setState({equation});
             }
@@ -217,10 +231,6 @@ class Application extends Component {
 
     equals = () => {
         let {equation, convertedEquation} = this.state;
-        /*
-        two parans (\)\()+
-        two or more operators [\.\-\*\+\/]*[\.\-\*\+\/]
-        */
         
         if(this.isEquationRight(equation)) {
             convertedEquation = this.infixToRpn(equation);

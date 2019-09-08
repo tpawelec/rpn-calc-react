@@ -42,7 +42,7 @@ body {
     background: #1d1d1d;
     display: block;
     padding: 10px;
-    font-size: 34px;
+    font-size: 38px;
     margin-bottom: 6px;
     border: none;
     border-radius: 5px;
@@ -72,4 +72,10 @@ body {
 }
 .calculator__button:active {
     background: #478AFF
+}
+
+.calculator__button--sub {
+    display: block;
+    font-size: 12px;
+    color: rgba(254, 254, 254, 0.7)
 }
