@@ -22,7 +22,7 @@ class Application extends Component {
             if(this.keys.indexOf(e.key) !== -1) {
                 this.addToCurrent(e.key);
             } else if(e.key === 'Enter') {
-                console.log(e.key)
+                e.preventDefault();
                 this.equals();
             } else if(e.key === 'Backspace') {
                 e.preventDefault();
@@ -41,21 +41,22 @@ class Application extends Component {
                 convertedEquation: []
             })
         } else {
-            if(this.state.equation.length === 1 && this.state.equation[this.state.equation.length - 1] === '0') {
+            let {equation} = this.state;
+            if(equation.length === 1 && equation[equation.length - 1] === '0') {
                 let {equation} = this.state;
                 equation[0] = symbol;
-                this.setState({equation: equation});
             } else {
-                if(!isNaN(this.state.equation[this.state.equation.length - 1]) && ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) === -1) {
-                    let {equation} = this.state;
+                if(!isNaN(equation[equation.length - 1]) && ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) === -1) {
                     equation[equation.length - 1] = equation[equation.length - 1] + symbol;
-                    this.setState({equation: equation});
+                } else if(isNaN(equation[equation.length - 1]) && 
+                    ['+', '-', '*', '/', '^'].indexOf(equation[equation.length - 1]) !== -1 && 
+                    ['+', '-', '*', '/', '^', '(', ')'].indexOf(symbol) !== -1) {
+                    equation[equation.length - 1] = symbol;
                 } else {
-                    let {equation} = this.state;
                     equation = [...equation, symbol];
-                    this.setState({equation: equation});
                 }
             }
+            this.setState({equation});
         }
     }
 
@@ -78,21 +79,27 @@ class Application extends Component {
         if(this.state.equation.length <= 1) {
             if(equation[equation.length - 1].length === 1) {
                 equation = ['0'];
-                this.setState({equation});
             } else {
                 equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
-                this.setState({equation});
             }
             
         } else {
             if(equation[equation.length - 1].length === 1) {
                 equation.pop();
-                this.setState({equation});
             } else {
                 equation[equation.length - 1] = equation[equation.length - 1].slice(0,-1);
-                this.setState({equation});
             }
         }
+
+        this.setState({equation});
+    }
+    negativeNumber = () => {
+        let {equation} = this.state;
+        if(!isNaN(equation[equation.length - 1])) {
+            let negativeNumber = (equation[equation.length - 1] * -1).toString();
+            equation[equation.length - 1] = negativeNumber;
+        }
+        this.setState({equation});
     }
     infixToRpn = (equation) => {
         let operatorStack = [];
@@ -235,8 +242,11 @@ class Application extends Component {
         if(this.isEquationRight(equation)) {
             convertedEquation = this.infixToRpn(equation);
             equation = this.solveEquation(convertedEquation);
-            this.setState({convertedEquation})
-            this.setState({equation, nextIsRestet: true})
+            this.setState({
+                equation,
+                convertedEquation,
+                nextIsRestet: true
+            });
         } else {
             this.setState({convertedEquation: ['Your equation is wrong']})
         }
@@ -245,7 +255,8 @@ class Application extends Component {
 
         const buttons = [
             {symbol: 'C', cols: 2, action: this.reset},
-            {symbol: '\u2B70', cols: 2, action: this.backspace},
+            {symbol: '\u2B70', cols: 1, action: this.backspace},
+            {symbol: '\u00B1', cols: 1, action: this.negativeNumber},
             {symbol: "(", cols: 1, action: this.addToCurrent},
             {symbol: ")", cols: 1, action: this.addToCurrent},
             {symbol: "^", cols: 1, action: this.addToCurrent},
