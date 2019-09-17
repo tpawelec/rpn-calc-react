@@ -31,5 +31,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://tpawelec.github.io/rpn-calc-react"
+  "homepage": "https://tpawelec.github.io/rpn-calc-react",
+  "devDependencies": {
+    "big.js": "^5.2.2"
+  }
 }

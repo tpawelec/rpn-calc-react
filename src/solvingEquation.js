@@ -1,3 +1,5 @@
+import Big from 'big.js';
+
 export const infixToRpn = (equation) => {
     let operatorStack = [];
     let outputStack = [];
@@ -26,9 +28,11 @@ export const infixToRpn = (equation) => {
     }
 
     // eslint-disable-next-line
-    for(const token of equation) {
+    for(let token of equation) {
 
-        
+        if(token.indexOf('.') === 0) {
+            token = '0'.concat('', token);
+        }
         if((!isNaN(token) || token === '.') && token !== ' ') {
             outputStack.push(token);
         } else if (operatorsArray.indexOf(token) !== -1 && operatorStack.length === 0) {
@@ -87,22 +91,22 @@ export const solveEquation = (equation) => {
         if(!isNaN(item)) {
             stack.push(item);
         } else {
-            let second = parseFloat(stack.pop());
-            let first = parseFloat(stack.pop());
+            let second = Big(stack.pop());
+            let first = Big(stack.pop());
             if(item === '+') {
-                stack.push(first + second);
+                stack.push(first.plus(second));
             } else if(item === '-') {
-                stack.push(first - second);
+                stack.push(first.minus(second));
             } else if(item === "*") {
-                stack.push(first*second);
+                stack.push(first.times(second));
             } else if(item === "/") {
-                stack.push(first / second);
+                stack.push(first.div(second));
             } else if(item === "^") {
-                stack.push(Math.pow(first,second));
+                stack.push(first.pow(second));
             }
         }
     }
     })
 
-    return stack.map(String);
+    return stack;
 }
